@@ -18,4 +18,9 @@ func main() {
 	library.Check(err)
 
 	fmt.Println(encryptedText)
+
+	decryptedText, err := Decrypt(encryptedText, SECRET)
+	library.Check(err)
+
+	fmt.Println(decryptedText)
 }

@@ -21,17 +21,20 @@ func Encrypt(text, secret string) (string, error) {
 		return "", err
 	}
 
+	plainText := []byte(text)
+	cipherText := make([]byte, len(plainText))
+
 	//	Generate Initialization Vector using the appropriate block size
 	initializationVector := library.GenerateBytes(block.BlockSize())
 
 	//	Encrypter Stream
 	CFBEncrypter := cipher.NewCFBEncrypter(block, initializationVector)
 
-	plainText := []byte(text)
-	cipherText := make([]byte, len(plainText))
-
 	//	Encrypt plainText into cipherText
 	CFBEncrypter.XORKeyStream(cipherText, plainText)
+
+	//	Append Initialization Vector to the end of the cipherText
+	cipherText = append(cipherText, initializationVector...)
 
 	return Encode(cipherText), nil
 }
