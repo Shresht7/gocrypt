@@ -4,15 +4,15 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-
-	"github.com/Shresht7/gocrypt/library"
 )
 
-func Decode(s string) []byte {
+func Decode(s string) ([]byte, error) {
 	data, err := base64.StdEncoding.DecodeString(s)
-	library.Check(err)
+	if err != nil {
+		return nil, err
+	}
 
-	return data
+	return data, nil
 }
 
 func Decrypt(text, secret string) (string, error) {
@@ -23,7 +23,10 @@ func Decrypt(text, secret string) (string, error) {
 		return "", err
 	}
 
-	cipherText := Decode(text)
+	cipherText, err := Decode(text)
+	if err != nil {
+		return "", err
+	}
 	plainText := make([]byte, len(cipherText))
 
 	//	Extract Initialization Vector

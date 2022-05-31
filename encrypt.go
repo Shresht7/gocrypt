@@ -25,7 +25,10 @@ func Encrypt(text, secret string) (string, error) {
 	cipherText := make([]byte, len(plainText))
 
 	//	Generate Initialization Vector using the appropriate block size
-	initializationVector := library.GenerateBytes(block.BlockSize())
+	initializationVector, err := library.GenerateBytes(block.BlockSize())
+	if err != nil {
+		return "", err
+	}
 
 	//	Encrypter Stream
 	CFBEncrypter := cipher.NewCFBEncrypter(block, initializationVector)
