@@ -12,7 +12,7 @@ func GenerateBytes(n int) []byte {
 	b := make([]byte, n)
 
 	_, err := rand.Read(b)
-	check(err)
+	Check(err)
 
 	return b
 }
@@ -54,11 +54,4 @@ func GenerateBase64(n int) string {
 //	Generates a random hex of length n
 func GenerateHex(n int) string {
 	return hex.EncodeToString(GenerateBytes(n))
-}
-
-//	Panic if error
-func check(err error) {
-	if err != nil {
-		panic(err)
-	}
 }
