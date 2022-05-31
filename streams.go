@@ -63,9 +63,9 @@ func (s *StreamEncrypter) Read(p []byte) (int, error) {
 	return 0, io.EOF
 }
 
-//	================
-//  STREAM DECRYPTER
-//	================
+//	===============
+//	STREAM METADATA
+//	===============
 
 //	Metadata about the encrypted stream
 type StreamMeta struct {
@@ -79,6 +79,10 @@ type StreamMeta struct {
 func (s *StreamEncrypter) Meta() StreamMeta {
 	return StreamMeta{IV: s.IV, Hash: s.MAC.Sum(nil)}
 }
+
+//	================
+//  STREAM DECRYPTER
+//	================
 
 //	Stream Decrypter is a decrypter for a stream of data with authentication
 type StreamDecrypter struct {
