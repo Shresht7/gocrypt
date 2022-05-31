@@ -2,9 +2,9 @@ package library
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/binary"
 	"encoding/hex"
-	"math/rand"
 )
 
 //	Generates n random bytes
