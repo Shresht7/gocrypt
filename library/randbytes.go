@@ -8,7 +8,7 @@ func GenerateBytes(size int) ([]byte, error) {
 
 	_, err := rand.Read(b)
 	if err != nil {
-		return nil, err
+		panic(err) //	Panics on errors as key generation is critical
 	}
 
 	return b, nil
