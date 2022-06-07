@@ -5,6 +5,8 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	"hash"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 //	Hash data using the SHA-256 algorithm
@@ -27,4 +29,16 @@ func Hash(s []byte, h hash.Hash) ([]byte, error) {
 		return nil, err
 	}
 	return h.Sum(nil), nil
+}
+
+const WORK_FACTOR = 14
+
+//	Hashes the password using bcrypt
+func HashPassword(password []byte) ([]byte, error) {
+	return bcrypt.GenerateFromPassword(password, WORK_FACTOR)
+}
+
+//	Verify the password with the given hash. Returns error on failure.
+func VerifyPassword(password, hash []byte) error {
+	return bcrypt.CompareHashAndPassword(hash, password)
 }
