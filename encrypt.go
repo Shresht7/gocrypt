@@ -34,5 +34,5 @@ func Encrypt(text, secret string) (string, error) {
 	//	Append Initialization Vector to the end of the cipherText
 	cipherText = append(cipherText, initializationVector...)
 
-	return library.Encode(cipherText), nil
+	return library.EncodeBase64(cipherText), nil
 }

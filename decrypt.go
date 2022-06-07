@@ -15,7 +15,7 @@ func Decrypt(text, secret string) (string, error) {
 		return "", err
 	}
 
-	cipherText, err := library.Decode(text)
+	cipherText, err := library.DecodeBase64(text)
 	if err != nil {
 		return "", err
 	}
