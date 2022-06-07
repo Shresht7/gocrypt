@@ -8,10 +8,13 @@ import (
 )
 
 //	Encrypt the given text
-func Encrypt(text, secret string) (string, error) {
+func Encrypt(text string, secret string) (string, error) {
+
+	//	Generate Key from Secret
+	key := Hash([]byte(secret))
 
 	//	Generate Cipher Block
-	block, err := aes.NewCipher([]byte(secret))
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
 	}

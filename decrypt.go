@@ -9,8 +9,11 @@ import (
 
 func Decrypt(text, secret string) (string, error) {
 
+	//	Generate Key from Secret
+	key := Hash([]byte(secret))
+
 	//	Generate Decipher Block
-	block, err := aes.NewCipher([]byte(secret))
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
 	}

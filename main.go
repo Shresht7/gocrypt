@@ -5,20 +5,23 @@ import (
 )
 
 const TEXT = "Hello Go"
-const SECRET = "C104K3D!C104K3D!"
+const SECRET = "C104K3D!"
 
 func main() {
+
+	fmt.Println("PlainText:\t", TEXT)
+
 	encryptedText, err := Encrypt(TEXT, SECRET)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(encryptedText)
+	fmt.Println("CipherText:\t", encryptedText)
 
 	decryptedText, err := Decrypt(encryptedText, SECRET)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(decryptedText)
+	fmt.Println("Decrypted Text:\t", decryptedText)
 }
