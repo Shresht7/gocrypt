@@ -3,14 +3,9 @@ package main
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"encoding/base64"
 
 	"github.com/Shresht7/gocrypt/library"
 )
-
-func Encode(b []byte) string {
-	return base64.StdEncoding.EncodeToString(b)
-}
 
 //	Encrypt the given text
 func Encrypt(text, secret string) (string, error) {
@@ -39,5 +34,5 @@ func Encrypt(text, secret string) (string, error) {
 	//	Append Initialization Vector to the end of the cipherText
 	cipherText = append(cipherText, initializationVector...)
 
-	return Encode(cipherText), nil
+	return library.Encode(cipherText), nil
 }
