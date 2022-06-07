@@ -23,22 +23,26 @@ func Decrypt(text, secret string) (string, error) {
 		return "", err
 	}
 
-	cipherText, err := library.DecodeBase64(text)
+	gcm, err := cipher.NewGCM(block)
 	if err != nil {
 		return "", err
 	}
-	plainText := make([]byte, len(cipherText))
 
-	//	Extract Initialization Vector
-	initializationVector := cipherText[len(cipherText)-block.BlockSize():]
-	cipherText = cipherText[:len(cipherText)-block.BlockSize()]
+	ciphertext, err := library.DecodeBase64(text)
+	if err != nil {
+		return "", err
+	}
 
-	//	Decrypter Stream
-	CFBDecrypter := cipher.NewCFBDecrypter(block, initializationVector)
+	//	Extract Nonce
+	nonce := ciphertext[:gcm.NonceSize()]
+	ciphertext = ciphertext[gcm.NonceSize():]
 
-	//	Decrypt cipherText into plainText
-	CFBDecrypter.XORKeyStream(plainText, cipherText)
+	//	Decrypt
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		return "", err
+	}
 
-	return string(plainText), nil
+	return string(plaintext), nil
 
 }
