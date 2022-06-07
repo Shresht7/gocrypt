@@ -3,6 +3,8 @@ package main
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/hmac"
+	"crypto/sha512"
 
 	"github.com/Shresht7/gocrypt/library"
 )
@@ -10,8 +12,11 @@ import (
 //	Encrypt the given text
 func Encrypt(text string, secret string) (string, error) {
 
-	//	Generate Key from Secret
-	key := Hash([]byte(secret))
+	//	Generate Key from Secret using HMAC
+	key, err := Hash([]byte(secret), hmac.New(sha512.New512_256, []byte(secret)))
+	if err != nil {
+		return "", err
+	}
 
 	//	Generate Cipher Block
 	block, err := aes.NewCipher(key)
