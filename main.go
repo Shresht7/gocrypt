@@ -30,6 +30,7 @@ func main() {
 
 	file, _ := os.Open("README.md")
 	dest, _ := os.Create("README.md.enc")
+
 	encrypter, _ := NewStreamEncrypter([]byte(SECRET), []byte(SECRET), file)
 	io.Copy(dest, encrypter)
 
@@ -39,4 +40,8 @@ func main() {
 
 	decrypter, _ := NewStreamDecrypter([]byte(SECRET), []byte(SECRET), meta, newFile)
 	io.Copy(os.Stdout, decrypter)
+
+	EncryptFile("README.md", "README.lock.md", "seven", "seven")
+
+	DecryptFile("README.lock.md", "test", "seven", "seven")
 }
