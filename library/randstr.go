@@ -2,22 +2,9 @@ package library
 
 import (
 	"bytes"
-	"crypto/rand"
 	"encoding/binary"
 	"encoding/hex"
 )
-
-//	Generates n random bytes
-func GenerateBytes(n int) ([]byte, error) {
-	b := make([]byte, n)
-
-	_, err := rand.Read(b)
-	if err != nil {
-		return nil, err
-	}
-
-	return b, nil
-}
 
 const NUMBERS = "1234567890"
 const LOWERCASE_ALPHABETS = "abcdefghijklmnopqrstuvwxyz"
