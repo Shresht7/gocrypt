@@ -134,10 +134,10 @@ func (p *Params) Check() error {
 //	The params will use the given memory (MiB) and will take the given time to compute (but not less that timeout / 2)
 //	The default timeout (when timeout == 0) is 200ms
 //	The default memory usage (when memMiBytes = 0) is 32MiB
-func (p *Params) Calibrate(timeout time.Duration, memMiBytes int) (*Params, error) {
+func (p *Params) Calibrate(timeout time.Duration, memMiBytes int) error {
 
 	if err := p.Check(); err != nil {
-		return p, err
+		return err
 	}
 
 	if timeout == 0 {
@@ -150,7 +150,7 @@ func (p *Params) Calibrate(timeout time.Duration, memMiBytes int) (*Params, erro
 
 	salt, err := library.GenerateBytes(p.SaltLength)
 	if err != nil {
-		return p, err
+		return err
 	}
 
 	password := []byte("CalibrateThis")
@@ -180,7 +180,7 @@ func (p *Params) Calibrate(timeout time.Duration, memMiBytes int) (*Params, erro
 	//	Calculate the current execution time
 	start := time.Now()
 	if _, err := scrypt.Key(password, salt, p.N, p.R, p.P, p.KeyLength); err != nil {
-		return p, err
+		return err
 	}
 	dur := time.Since(start)
 
@@ -199,7 +199,7 @@ func (p *Params) Calibrate(timeout time.Duration, memMiBytes int) (*Params, erro
 
 		start = time.Now()
 		if _, err := scrypt.Key(password, salt, p.N, p.R, p.P, p.KeyLength); err != nil {
-			return p, err
+			return err
 		}
 		dur = time.Since(start)
 	}
@@ -207,6 +207,6 @@ func (p *Params) Calibrate(timeout time.Duration, memMiBytes int) (*Params, erro
 	//	lower by 1 to get shorter duration than timeout
 	p.P--
 
-	return p, p.Check()
+	return p.Check()
 
 }

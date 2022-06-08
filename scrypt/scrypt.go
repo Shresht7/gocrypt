@@ -2,6 +2,7 @@ package scrypt
 
 import (
 	"crypto/subtle"
+	"time"
 
 	"github.com/Shresht7/gocrypt/library"
 	"golang.org/x/crypto/scrypt"
@@ -57,5 +58,32 @@ func Verify(password, hash []byte) error {
 	}
 
 	return ErrMismatchHashAndPassword
+
+}
+
+//	Upgrade the password-hash combination by recalibrating the scrypt parameters to the given timeout and memory constraints.
+//	Returns an error if the password and hash do not match, calibration fails or rehash fails.
+//	Returns a new hash with the updated parameters.
+func Upgrade(password, hash []byte, timeout time.Duration, memMiBytes int) ([]byte, error) {
+
+	//	Decode the hash and retrieve the salt and scrypt parameters
+	params, _, _, err := Decode(hash)
+	if err != nil {
+		return nil, err
+	}
+
+	//	Verify the given password
+	err = Verify(password, hash)
+	if err != nil {
+		return nil, err
+	}
+
+	//	Recalibrate parameters
+	if err = params.Calibrate(timeout, memMiBytes); err != nil {
+		return nil, err
+	}
+
+	//	Rehash password
+	return Hash(password, params)
 
 }
