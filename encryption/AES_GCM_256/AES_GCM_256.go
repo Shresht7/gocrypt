@@ -6,19 +6,16 @@ import (
 	"crypto/cipher"
 	"errors"
 
-	"github.com/Shresht7/gocrypt/key/argon2id"
+	"github.com/Shresht7/gocrypt/hash"
 	"github.com/Shresht7/gocrypt/library"
 )
 
 //	Generates a new key from the given secret of the given size using argon2id.
 //	Panics if the key generation fails.
-func GenerateKey(secret []byte, size uint32) []byte {
-	params := argon2id.DefaultParams
-	params.KeyLength = size //	Adjust the key length
-
-	key, err := argon2id.Hash(secret, params)
+func GenerateKey(secret []byte) []byte {
+	key, err := hash.HMAC_SHA_512_256(secret, string(secret))
 	if err != nil {
-		panic(err) //	Panic if key generation fails
+		panic(err) //	Key generation is critical
 	}
 	return key
 }
@@ -28,7 +25,7 @@ func GenerateKey(secret []byte, size uint32) []byte {
 func Encrypt(plaintext, secret []byte) ([]byte, error) {
 
 	//	Generate key from secret
-	key := GenerateKey(secret, 32) //	16, 24, or 32 bytes to select AES-128, AES-192, or AES-256
+	key := GenerateKey(secret)
 
 	//	Generate cipher block
 	block, err := aes.NewCipher(key)
@@ -60,7 +57,7 @@ func Encrypt(plaintext, secret []byte) ([]byte, error) {
 func Decrypt(ciphertext, secret []byte) ([]byte, error) {
 
 	//	Generate key from secret
-	key := GenerateKey(secret, 32) //	16, 24, or 32 bytes to select AES-128, AES-192, or AES-256
+	key := GenerateKey(secret)
 
 	//	Generate decipher block
 	block, err := aes.NewCipher(key)
