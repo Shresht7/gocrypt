@@ -7,6 +7,9 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
+//	Returns the derived key of the given password using the argon2id key-derivation functions
+//	based on the given parameters. The parameters are prepended to the derived key and separated
+//	by the "$" character (0x24). If the provided parameters are invalid, an error will be returned
 func Hash(password []byte, params Params) ([]byte, error) {
 
 	//	TODO: Check Params
@@ -24,6 +27,8 @@ func Hash(password []byte, params Params) ([]byte, error) {
 	return result, nil
 }
 
+//	Compares a derived key with the potential password. The parameters from the derived key are used.
+//	The comparison is constant-time. It returns nil on success and an error if derived keys do not match.
 func Verify(password, hash []byte) error {
 
 	//	Decode the hash and retrieve argon2id parameters and the salt
