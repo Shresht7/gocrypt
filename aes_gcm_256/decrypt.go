@@ -1,4 +1,4 @@
-package main
+package aes_gcm_256
 
 import (
 	"crypto/aes"
@@ -10,8 +10,7 @@ import (
 	"github.com/Shresht7/gocrypt/library"
 )
 
-//	Encrypt the given text
-func Encrypt(text string, secret string) (string, error) {
+func Decrypt(text, secret string) (string, error) {
 
 	//	Generate Key from Secret using HMAC
 	key, err := hash.Hash([]byte(secret), hmac.New(sha512.New512_256, []byte(secret)))
@@ -19,7 +18,7 @@ func Encrypt(text string, secret string) (string, error) {
 		return "", err
 	}
 
-	//	Generate Cipher Block
+	//	Generate Decipher Block
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
@@ -30,17 +29,21 @@ func Encrypt(text string, secret string) (string, error) {
 		return "", err
 	}
 
-	//	Generate Nonce
-	nonce, err := library.GenerateBytes(gcm.NonceSize())
+	ciphertext, err := library.DecodeBase64(text)
 	if err != nil {
 		return "", err
 	}
 
-	plaintext := []byte(text)
+	//	Extract Nonce
+	nonce := ciphertext[:gcm.NonceSize()]
+	ciphertext = ciphertext[gcm.NonceSize():]
 
-	//	Seal the text
-	ciphertext := gcm.Seal(nonce, nonce, plaintext, nil)
+	//	Decrypt
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		return "", err
+	}
 
-	return library.EncodeBase64(ciphertext), nil
+	return string(plaintext), nil
 
 }

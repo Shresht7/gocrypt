@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/Shresht7/gocrypt/aes_gcm_256"
 )
 
 const TEXT = "Hello Go"
@@ -11,14 +13,14 @@ func main() {
 
 	fmt.Println("PlainText:\t", TEXT)
 
-	encryptedText, err := Encrypt(TEXT, SECRET)
+	encryptedText, err := aes_gcm_256.Encrypt(TEXT, SECRET)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("CipherText:\t", encryptedText)
 
-	decryptedText, err := Decrypt(encryptedText, SECRET)
+	decryptedText, err := aes_gcm_256.Decrypt(encryptedText, SECRET)
 	if err != nil {
 		panic(err)
 	}
