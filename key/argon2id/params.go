@@ -11,25 +11,25 @@ import (
 
 //	Input parameters for the argon2id key-derivation function
 type Params struct {
-	memory      uint32
-	iterations  uint32
-	parallelism uint8
-	saltLength  uint32
-	keyLength   uint32
+	Memory      uint32
+	Iterations  uint32
+	Parallelism uint8
+	SaltLength  uint32
+	KeyLength   uint32
 }
 
 //	Sensible defaults for the argon2id key-derivation function
 var DefaultParams Params = Params{
-	memory:      64 * 1024,
-	iterations:  3,
-	parallelism: 2,
-	saltLength:  16,
-	keyLength:   32,
+	Memory:      64 * 1024,
+	Iterations:  3,
+	Parallelism: 2,
+	SaltLength:  16,
+	KeyLength:   32,
 }
 
 //	Encode the parameters along with the salt and key
 func (p *Params) Encode(salt, derivedKey []byte) []byte {
-	return []byte(fmt.Sprintf("$argon2id$v=%d$m=%d,t=%d,p=%d$%x$%x", argon2.Version, p.memory, p.iterations, p.parallelism, salt, derivedKey))
+	return []byte(fmt.Sprintf("$argon2id$v=%d$m=%d,t=%d,p=%d$%x$%x", argon2.Version, p.Memory, p.Iterations, p.Parallelism, salt, derivedKey))
 }
 
 //	Extracts the argon2id parameters, salt and derived key from the given hash.
@@ -49,7 +49,7 @@ func Decode(hash []byte) (Params, []byte, []byte, error) {
 	var params Params
 	var err error
 
-	_, err = fmt.Scanf(s[3], "m=%d,t=%d,p=%d", &params.memory, &params.iterations, &params.parallelism)
+	_, err = fmt.Scanf(s[3], "m=%d,t=%d,p=%d", &params.Memory, &params.Iterations, &params.Parallelism)
 	if err != nil {
 		return params, nil, nil, ErrInvalidHash
 	}
@@ -58,13 +58,13 @@ func Decode(hash []byte) (Params, []byte, []byte, error) {
 	if err != nil {
 		return params, nil, nil, ErrInvalidHash
 	}
-	params.saltLength = uint32(len(salt))
+	params.SaltLength = uint32(len(salt))
 
 	derivedKey, err := library.DecodeHex(s[5])
 	if err != nil {
 		return params, nil, nil, ErrInvalidHash
 	}
-	params.keyLength = uint32(len(derivedKey))
+	params.KeyLength = uint32(len(derivedKey))
 
 	//	TODO: Check
 

@@ -15,13 +15,13 @@ func Hash(password []byte, params Params) ([]byte, error) {
 	//	TODO: Check Params
 
 	//	Generate Salt
-	salt, err := library.GenerateBytes(int(params.saltLength))
+	salt, err := library.GenerateBytes(int(params.SaltLength))
 	if err != nil {
 		panic(err)
 	}
 
 	//	Derive the key
-	derivedKey := argon2.IDKey(password, salt, params.iterations, params.memory, params.parallelism, params.keyLength)
+	derivedKey := argon2.IDKey(password, salt, params.Iterations, params.Memory, params.Parallelism, params.KeyLength)
 
 	result := params.Encode(salt, derivedKey)
 	return result, nil
@@ -38,7 +38,7 @@ func Verify(password, hash []byte) error {
 	}
 
 	//	argon2id the plaintext using the given salt and parameters
-	target := argon2.IDKey(password, salt, params.iterations, params.memory, params.parallelism, params.keyLength)
+	target := argon2.IDKey(password, salt, params.Iterations, params.Memory, params.Parallelism, params.KeyLength)
 	if err != nil {
 		return err
 	}

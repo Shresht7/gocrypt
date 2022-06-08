@@ -4,82 +4,95 @@ package aes_gcm_256
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/hmac"
-	"crypto/sha512"
+	"errors"
 
-	"github.com/Shresht7/gocrypt/hash"
+	"github.com/Shresht7/gocrypt/key/argon2id"
 	"github.com/Shresht7/gocrypt/library"
 )
 
-//	Encrypt the given text
-func Encrypt(text string, secret string) (string, error) {
+//	Generates a new key from the given secret of the given size using argon2id.
+//	Panics if the key generation fails.
+func GenerateKey(secret []byte, size uint32) []byte {
+	params := argon2id.DefaultParams
+	params.KeyLength = size //	Adjust the key length
 
-	//	Generate Key from Secret using HMAC
-	key, err := hash.Hash([]byte(secret), hmac.New(sha512.New512_256, []byte(secret)))
+	key, err := argon2id.Hash(secret, params)
 	if err != nil {
-		return "", err
+		panic(err) //	Panic if key generation fails
 	}
+	return key
+}
 
-	//	Generate Cipher Block
+//	Encrypt the given plaintext using the given secret using AES-GCM-256.
+//	Output: nonce||ciphertext|tag where | is concatenation
+func Encrypt(plaintext, secret []byte) ([]byte, error) {
+
+	//	Generate key from secret
+	key := GenerateKey(secret, 32) //	16, 24, or 32 bytes to select AES-128, AES-192, or AES-256
+
+	//	Generate cipher block
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
+	//	Wrap block cipher in GCM
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	//	Generate Nonce
+	//	Generate nonce
 	nonce, err := library.GenerateBytes(gcm.NonceSize())
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	plaintext := []byte(text)
-
-	//	Seal the text
+	//	Seal the plaintext
 	ciphertext := gcm.Seal(nonce, nonce, plaintext, nil)
 
-	return library.EncodeBase64(ciphertext), nil
+	return ciphertext, nil
 
 }
 
-func Decrypt(text, secret string) (string, error) {
+//	Decrypt the given ciphertext using the given secret using AES-GCM-256.
+//	Input: nonce||ciphertext|tag where | is concatenation
+func Decrypt(ciphertext, secret []byte) ([]byte, error) {
 
-	//	Generate Key from Secret using HMAC
-	key, err := hash.Hash([]byte(secret), hmac.New(sha512.New512_256, []byte(secret)))
-	if err != nil {
-		return "", err
-	}
+	//	Generate key from secret
+	key := GenerateKey(secret, 32) //	16, 24, or 32 bytes to select AES-128, AES-192, or AES-256
 
-	//	Generate Decipher Block
+	//	Generate decipher block
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
+	//	Wrap block cipher in GCM
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	ciphertext, err := library.DecodeBase64(text)
-	if err != nil {
-		return "", err
+	//	Check ciphertext length against GCM nonce size
+	if len(ciphertext) < gcm.NonceSize() {
+		return nil, ErrMalformedCiphertext
 	}
 
-	//	Extract Nonce
-	nonce := ciphertext[:gcm.NonceSize()]
-	ciphertext = ciphertext[gcm.NonceSize():]
+	//	Extract nonce from ciphertext
+	nonce, ciphertext := ciphertext[:gcm.NonceSize()], ciphertext[gcm.NonceSize():]
 
-	//	Decrypt
+	//	Decrypt ciphertext
 	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return string(plaintext), nil
+	return plaintext, nil
 
 }
+
+//	Errors
+var (
+	ErrMalformedCiphertext = errors.New("malformed ciphertext")
+)
