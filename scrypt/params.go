@@ -11,13 +11,16 @@ import (
 )
 
 const (
-	maxInt        = 1<<31 - 1
-	minSaltLength = 8
-	minKeyLength  = 16
+	maxInt        = 1<<31 - 1 // Maximum Integer Value
+	minSaltLength = 8         // Minimum Length of Salt
+	minKeyLength  = 16        // Minimum Length of Derived Key
 )
 
 //	Input parameters for the scrypt key-derivation function
 //	as described in Colin Percival's paper (http://www.tarsnap.com/scrypt/scrypt.pdf)
+//	he recommended parameters for interactive logins as of 2017 are N=32768, r=8 and p=1.
+//	The parameters N, r, and p should be increased as memory latency and CPU parallelism increases;
+//	consider setting N to the highest power of 2 you can derive within 100 milliseconds.
 type Params struct {
 	N          int // CPU/Memory cost parameter (logN)
 	R          int // Block size parameter (octets)
