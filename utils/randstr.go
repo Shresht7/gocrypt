@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"encoding/binary"
-	"encoding/hex"
 )
 
 //	Character Sets
@@ -18,16 +17,22 @@ const (
 //	Generates a random string using the given charset.
 //	If no charset is provided, uses the default charset (alphanumeric).
 func GenerateString(n int, charset ...string) (string, error) {
+
+	//	Runes to use to generate strings
 	var runes []rune
-	if len(charset) == 0 {
-		runes = []rune(CHARSET)
-	} else {
+	if len(charset) != 0 {
+		//	If the user provides a character set, use it
 		runes = []rune(charset[0])
+	} else {
+		//	Otherwise, use the default character set
+		runes = []rune(CHARSET)
 	}
 
+	//	Create a byte buffer to store the string
 	var bytesBuffer bytes.Buffer
-	bytesBuffer.Grow(n)
+	bytesBuffer.Grow(n) //	Pre-allocate the buffer
 
+	//	Generate the string
 	length := uint32(len(runes))
 	for i := 0; i < n; i++ {
 		bytes, err := GenerateBytes(4)
@@ -53,5 +58,5 @@ func GenerateHex(n int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return hex.EncodeToString(bytes), nil
+	return EncodeHex(bytes), nil
 }
