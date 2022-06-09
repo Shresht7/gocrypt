@@ -23,7 +23,7 @@ func TestGenerateBytes(t *testing.T) {
 
 	//	Check that the string is of length 10
 	if cap(b) != 10 {
-		t.Errorf("Bytes is not of length 10: %v", b)
+		t.Errorf("Bytes is not of capacity 10: %v", b)
 	}
 
 }
