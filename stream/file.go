@@ -1,9 +1,9 @@
 package stream
 
 import (
+	"bytes"
 	"crypto/aes"
 	"crypto/sha256"
-	"fmt"
 	"io"
 	"os"
 )
@@ -32,16 +32,10 @@ func EncryptFile(src, dst, key, macKey string) error {
 		return err
 	}
 
-	io.Copy(dstFile, encrypter)
-
 	metadata := encrypter.Meta()
 
-	fmt.Println(metadata.IV, "\t", metadata.Hash)
-
-	metadataBytes := make([]byte, len(metadata.IV)+len(metadata.Hash))
-	metadataBytes = append(metadata.Hash, metadataBytes...)
-	metadataBytes = append(metadata.IV, metadataBytes...)
-	err = os.WriteFile(dst, metadataBytes, 0777)
+	composed := io.MultiReader(bytes.NewReader(metadata.IV), bytes.NewReader(metadata.Hash), encrypter)
+	_, err = io.Copy(dstFile, composed)
 	if err != nil {
 		return err
 	}
@@ -65,18 +59,25 @@ func DecryptFile(src, dst, key, macKey string) error {
 		return nil
 	}
 
-	hash := hashIV[:32]
-	iv := hashIV[32:]
+	iv := hashIV[:aes.BlockSize]
+	hash := hashIV[aes.BlockSize:]
 
 	metadata := StreamMeta{IV: iv, Hash: hash}
-	fmt.Println(metadata.IV, metadata.Hash)
 
 	decrypter, err := NewStreamDecrypter(keyHash[:], macHash[:], metadata, srcFile)
 	if err != nil {
 		return nil
 	}
 
-	io.Copy(os.Stdout, decrypter)
+	dstFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(dstFile, decrypter)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
