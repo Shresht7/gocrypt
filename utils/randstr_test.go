@@ -61,5 +61,4 @@ func TestGenerateString(t *testing.T) {
 	if !strings.ContainsAny(str, "x") {
 		t.Errorf("String does not contain custom character set: %v", str)
 	}
-
 }

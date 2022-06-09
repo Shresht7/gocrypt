@@ -25,5 +25,4 @@ func TestGenerateBytes(t *testing.T) {
 	if cap(b) != 10 {
 		t.Errorf("Bytes is not of capacity 10: %v", b)
 	}
-
 }

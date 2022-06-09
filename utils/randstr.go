@@ -45,6 +45,7 @@ func GenerateString(n int, charset ...string) (string, error) {
 	}
 
 	return bytesBuffer.String(), nil
+
 }
 
 //	Generates a random base64 string of length n
