@@ -27,7 +27,7 @@ func main() {
 
 	fmt.Println("Decrypted Text:\t", decryptedText)
 
-	stream.EncryptFile("README.md", "README.lock.md", "seven", "seven")
+	stream.EncryptFile("__test__/original.md", "__test__/original.md.lock", "seven", "seven")
 
-	stream.DecryptFile("README.lock.md", "test", "seven", "seven")
+	stream.DecryptFile("__test__/original.md.lock", "__test__/new.md", "seven", "seven")
 }
