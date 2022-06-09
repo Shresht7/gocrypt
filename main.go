@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"os"
 
 	"github.com/Shresht7/gocrypt/encryption/aes_256_gcm"
+	"github.com/Shresht7/gocrypt/stream"
 )
 
 var TEXT = []byte("Hello Go")
@@ -28,20 +27,7 @@ func main() {
 
 	fmt.Println("Decrypted Text:\t", decryptedText)
 
-	file, _ := os.Open("README.md")
-	dest, _ := os.Create("README.md.enc")
+	stream.EncryptFile("README.md", "README.lock.md", "seven", "seven")
 
-	encrypter, _ := NewStreamEncrypter([]byte(SECRET), []byte(SECRET), file)
-	io.Copy(dest, encrypter)
-
-	meta := encrypter.Meta()
-
-	newFile, _ := os.Open("README.md.enc")
-
-	decrypter, _ := NewStreamDecrypter([]byte(SECRET), []byte(SECRET), meta, newFile)
-	io.Copy(os.Stdout, decrypter)
-
-	EncryptFile("README.md", "README.lock.md", "seven", "seven")
-
-	DecryptFile("README.lock.md", "test", "seven", "seven")
+	stream.DecryptFile("README.lock.md", "test", "seven", "seven")
 }
