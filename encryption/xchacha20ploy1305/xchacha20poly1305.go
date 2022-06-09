@@ -32,7 +32,7 @@ func Encrypt(text, secret []byte) ([]byte, error) {
 	plaintext := []byte(text)
 
 	//	Generate Nonce
-	nonce, err := utils.GenerateBytes(aead.NonceSize(), aead.NonceSize()+len(plaintext)+aead.Overhead())
+	nonce, err := utils.GenerateBytesWithCapacity(aead.NonceSize(), aead.NonceSize()+len(plaintext)+aead.Overhead())
 	if err != nil {
 		return nil, err
 	}

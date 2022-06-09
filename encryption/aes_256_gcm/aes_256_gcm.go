@@ -40,7 +40,7 @@ func Encrypt(plaintext, secret []byte) ([]byte, error) {
 	}
 
 	//	Generate nonce
-	nonce, err := utils.GenerateBytes(gcm.NonceSize(), gcm.NonceSize()+len(plaintext)+gcm.Overhead())
+	nonce, err := utils.GenerateBytesWithCapacity(gcm.NonceSize(), gcm.NonceSize()+len(plaintext)+gcm.Overhead())
 	if err != nil {
 		return nil, err
 	}
