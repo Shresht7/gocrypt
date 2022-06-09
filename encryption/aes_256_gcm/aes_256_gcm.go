@@ -1,5 +1,5 @@
 //	Provides symmetric authenticated encryption using AES-GCM-256 AEAD
-package aes_gcm_256
+package aes_256_gcm
 
 import (
 	"crypto/aes"
@@ -7,7 +7,7 @@ import (
 	"errors"
 
 	"github.com/Shresht7/gocrypt/hash"
-	"github.com/Shresht7/gocrypt/library"
+	"github.com/Shresht7/gocrypt/utils"
 )
 
 //	Generates a new key from the given secret of the given size using argon2id.
@@ -40,7 +40,7 @@ func Encrypt(plaintext, secret []byte) ([]byte, error) {
 	}
 
 	//	Generate nonce
-	nonce, err := library.GenerateBytes(gcm.NonceSize())
+	nonce, err := utils.GenerateBytes(gcm.NonceSize(), gcm.NonceSize()+len(plaintext)+gcm.Overhead())
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,4 @@
-package aes_gcm_256
+package aes_256_gcm
 
 import "testing"
 
@@ -17,6 +17,7 @@ func TestGenerateKey(t *testing.T) {
 
 }
 
+//	Test the encrypt / decrypt process
 func TestEncryptDecrypt(t *testing.T) {
 
 	ciphertext, err := Encrypt(text, secret)
@@ -35,6 +36,7 @@ func TestEncryptDecrypt(t *testing.T) {
 
 }
 
+//	Test that decrypting a malformed ciphertext does not produce a plaintext
 func TestMalformedCipherText(t *testing.T) {
 
 	ciphertext, err := Encrypt(text, secret)

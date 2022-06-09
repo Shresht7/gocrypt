@@ -3,7 +3,7 @@ package xchacha20poly1305
 
 import (
 	"github.com/Shresht7/gocrypt/key/argon2id"
-	"github.com/Shresht7/gocrypt/library"
+	"github.com/Shresht7/gocrypt/utils"
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
@@ -25,7 +25,7 @@ func Encrypt(text, secret string) (string, error) {
 	plaintext := []byte(text)
 
 	//	Generate Nonce
-	nonce, err := library.GenerateBytesWithCapacity(aead.NonceSize(), aead.NonceSize()+len(plaintext)+aead.Overhead())
+	nonce, err := utils.GenerateBytes(aead.NonceSize(), aead.NonceSize()+len(plaintext)+aead.Overhead())
 	if err != nil {
 		return "", err
 	}
@@ -33,7 +33,7 @@ func Encrypt(text, secret string) (string, error) {
 	//	Seal the text
 	ciphertext := aead.Seal(nonce, nonce, plaintext, nil)
 
-	return library.EncodeBase64(ciphertext), nil
+	return utils.EncodeBase64(ciphertext), nil
 }
 
 func Decrypt(text, secret string) (string, error) {

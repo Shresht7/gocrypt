@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Shresht7/gocrypt/library"
+	"github.com/Shresht7/gocrypt/utils"
 	"golang.org/x/crypto/argon2"
 )
 
@@ -54,13 +54,13 @@ func Decode(hash []byte) (Params, []byte, []byte, error) {
 		return params, nil, nil, ErrInvalidHash
 	}
 
-	salt, err := library.DecodeHex(s[4])
+	salt, err := utils.DecodeHex(s[4])
 	if err != nil {
 		return params, nil, nil, ErrInvalidHash
 	}
 	params.SaltLength = uint32(len(salt))
 
-	derivedKey, err := library.DecodeHex(s[5])
+	derivedKey, err := utils.DecodeHex(s[5])
 	if err != nil {
 		return params, nil, nil, ErrInvalidHash
 	}

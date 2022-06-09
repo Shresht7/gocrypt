@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Shresht7/gocrypt/library"
+	"github.com/Shresht7/gocrypt/utils"
 	"golang.org/x/crypto/scrypt"
 )
 
@@ -74,13 +74,13 @@ func Decode(hash []byte) (Params, []byte, []byte, error) {
 		return params, nil, nil, ErrInvalidHash
 	}
 
-	salt, err := library.DecodeHex(s[3])
+	salt, err := utils.DecodeHex(s[3])
 	if err != nil {
 		return params, nil, nil, ErrInvalidHash
 	}
 	params.saltLength = len(salt)
 
-	derivedKey, err := library.DecodeHex(s[4])
+	derivedKey, err := utils.DecodeHex(s[4])
 	if err != nil {
 		return params, nil, nil, ErrInvalidHash
 	}
@@ -151,7 +151,7 @@ func (p *Params) Calibrate(timeout time.Duration, memMiBytes int) error {
 		memMiBytes = 32
 	}
 
-	salt, err := library.GenerateBytes(p.saltLength)
+	salt, err := utils.GenerateBytes(p.saltLength)
 	if err != nil {
 		return err
 	}

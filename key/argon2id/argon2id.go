@@ -3,7 +3,7 @@ package argon2id
 import (
 	"crypto/subtle"
 
-	"github.com/Shresht7/gocrypt/library"
+	"github.com/Shresht7/gocrypt/utils"
 	"golang.org/x/crypto/argon2"
 )
 
@@ -15,7 +15,7 @@ func Hash(password []byte, params Params) ([]byte, error) {
 	//	TODO: Check Params
 
 	//	Generate Salt
-	salt, err := library.GenerateBytes(int(params.SaltLength))
+	salt, err := utils.GenerateBytes(int(params.SaltLength))
 	if err != nil {
 		panic(err)
 	}

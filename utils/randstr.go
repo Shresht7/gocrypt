@@ -1,4 +1,4 @@
-package library
+package utils
 
 import (
 	"bytes"
@@ -6,11 +6,14 @@ import (
 	"encoding/hex"
 )
 
-const NUMBERS = "1234567890"
-const LOWERCASE_ALPHABETS = "abcdefghijklmnopqrstuvwxyz"
-const UPPERCASE_ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const ALPHABETS = LOWERCASE_ALPHABETS + UPPERCASE_ALPHABETS
-const CHARSET = NUMBERS + ALPHABETS
+//	Character Sets
+const (
+	NUMBERS             = "1234567890"
+	LOWERCASE_ALPHABETS = "abcdefghijklmnopqrstuvwxyz"
+	UPPERCASE_ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	ALPHABETS           = LOWERCASE_ALPHABETS + UPPERCASE_ALPHABETS
+	CHARSET             = NUMBERS + ALPHABETS
+)
 
 //	Generates a random string using the given charset.
 //	If no charset is provided, uses the default charset (alphanumeric).

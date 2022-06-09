@@ -3,24 +3,24 @@ package main
 import (
 	"fmt"
 
-	"github.com/Shresht7/gocrypt/aes_gcm_256"
+	"github.com/Shresht7/gocrypt/encryption/aes_256_gcm"
 )
 
-const TEXT = "Hello Go"
-const SECRET = "C104K3D!"
+var TEXT = []byte("Hello Go")
+var SECRET = []byte("C104K3D!")
 
 func main() {
 
 	fmt.Println("PlainText:\t", TEXT)
 
-	encryptedText, err := aes_gcm_256.Encrypt(TEXT, SECRET)
+	encryptedText, err := aes_256_gcm.Encrypt(TEXT, SECRET)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("CipherText:\t", encryptedText)
 
-	decryptedText, err := aes_gcm_256.Decrypt(encryptedText, SECRET)
+	decryptedText, err := aes_256_gcm.Decrypt(encryptedText, SECRET)
 	if err != nil {
 		panic(err)
 	}

@@ -4,7 +4,7 @@ import (
 	"crypto/subtle"
 	"time"
 
-	"github.com/Shresht7/gocrypt/library"
+	"github.com/Shresht7/gocrypt/utils"
 	"golang.org/x/crypto/scrypt"
 )
 
@@ -19,7 +19,7 @@ func Hash(password []byte, params Params) ([]byte, error) {
 	}
 
 	//	Generate Salt
-	salt, err := library.GenerateBytes(int(params.saltLength))
+	salt, err := utils.GenerateBytes(int(params.saltLength))
 	if err != nil {
 		panic(err)
 	}
