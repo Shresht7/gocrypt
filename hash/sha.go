@@ -6,11 +6,11 @@ import (
 )
 
 //	Hash data using the SHA-256 algorithm
-func SHA256(s []byte) ([]byte, error) {
-	return Hash(s, sha256.New())
+func SHA256(data []byte) ([]byte, error) {
+	return Hash(data, sha256.New())
 }
 
 //	Hash data using the SHA-512 algorithm
-func SHA512(s []byte) ([]byte, error) {
-	return Hash(s, sha512.New())
+func SHA512(data []byte) ([]byte, error) {
+	return Hash(data, sha512.New())
 }
