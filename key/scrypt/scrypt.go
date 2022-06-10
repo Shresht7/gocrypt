@@ -19,13 +19,13 @@ func Hash(password []byte, params Params) ([]byte, error) {
 	}
 
 	//	Generate Salt
-	salt, err := utils.GenerateBytes(int(params.saltLength))
+	salt, err := utils.GenerateBytes(int(params.SaltLength))
 	if err != nil {
 		panic(err)
 	}
 
 	//	Derive the key
-	derivedKey, err := scrypt.Key(password, salt, params.n, params.r, params.p, params.keyLength)
+	derivedKey, err := scrypt.Key(password, salt, params.N, params.R, params.P, params.KeyLength)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func Verify(password, hash []byte) error {
 	}
 
 	//	scrypt the plaintext using the given salt and parameters
-	target, err := scrypt.Key(password, salt, params.n, params.r, params.p, params.keyLength)
+	target, err := scrypt.Key(password, salt, params.N, params.R, params.P, params.KeyLength)
 	if err != nil {
 		return err
 	}
