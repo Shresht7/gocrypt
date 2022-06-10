@@ -26,8 +26,6 @@ func Cost(hash []byte) (int, error) {
 	return bcrypt.Cost(hash)
 }
 
-var ErrCostTooLow = errors.New("new cost is lower than the current cost")
-
 //	Upgrade the password using the new cost. Returns an error if the password and hash do not match,
 //	or the new cost is lower than the current cost.
 func Upgrade(password, hash []byte, newCost int) ([]byte, error) {
@@ -43,7 +41,7 @@ func Upgrade(password, hash []byte, newCost int) ([]byte, error) {
 		return nil, err
 	}
 	if newCost < cost {
-		return nil, ErrCostTooLow
+		return nil, errors.New("new cost is lower than the current cost")
 	}
 
 	//	Upgrade the password
