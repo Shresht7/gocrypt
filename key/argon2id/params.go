@@ -2,7 +2,6 @@ package argon2id
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/Shresht7/gocrypt/utils"
@@ -11,6 +10,7 @@ import (
 
 //	Input parameters for the argon2id key-derivation function
 type Params struct {
+	Version     uint32
 	Memory      uint32
 	Iterations  uint32
 	Parallelism uint8
@@ -20,6 +20,7 @@ type Params struct {
 
 //	Sensible defaults for the argon2id key-derivation function
 var DefaultParams Params = Params{
+	Version:     argon2.Version,
 	Memory:      64 * 1024,
 	Iterations:  3,
 	Parallelism: 2,
@@ -29,7 +30,7 @@ var DefaultParams Params = Params{
 
 //	Encode the parameters along with the salt and key
 func (p *Params) Encode(salt, derivedKey []byte) []byte {
-	return []byte(fmt.Sprintf("$argon2id$v=%d$m=%d,t=%d,p=%d$%x$%x", argon2.Version, p.Memory, p.Iterations, p.Parallelism, salt, derivedKey))
+	return []byte(fmt.Sprintf("$argon2id$v=%d$m=%d,t=%d,p=%d$%x$%x", p.Version, p.Memory, p.Iterations, p.Parallelism, salt, derivedKey))
 }
 
 //	Extracts the argon2id parameters, salt and derived key from the given hash.
@@ -42,14 +43,15 @@ func Decode(hash []byte) (Params, []byte, []byte, error) {
 		return Params{}, nil, nil, ErrInvalidHash
 	}
 
-	if version, err := strconv.Atoi(s[2]); err != nil || version != argon2.Version {
-		return Params{}, nil, nil, ErrInvalidHash
-	}
-
 	var params Params
 	var err error
 
-	_, err = fmt.Scanf(s[3], "m=%d,t=%d,p=%d", &params.Memory, &params.Iterations, &params.Parallelism)
+	_, err = fmt.Sscanf(s[2], "v=%d", &params.Version)
+	if err != nil {
+		return Params{}, nil, nil, ErrInvalidHash
+	}
+
+	_, err = fmt.Sscanf(s[3], "m=%d,t=%d,p=%d", &params.Memory, &params.Iterations, &params.Parallelism)
 	if err != nil {
 		return params, nil, nil, ErrInvalidHash
 	}
