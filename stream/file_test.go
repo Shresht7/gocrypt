@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	original string = "../__test__/original.md"
-	lock     string = "../__test__/original.md.lock"
-	new      string = "../__test__/new.md"
+	original string = "../sample/original.md"
+	lock     string = "../sample/original.md.lock"
+	new      string = "../sample/new.md"
 )
 
 func TestEncryptDecrypt(t *testing.T) {
