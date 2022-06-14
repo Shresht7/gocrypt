@@ -12,7 +12,7 @@ func TestHash(t *testing.T) {
 	params := DefaultParams
 
 	//	Hash the password
-	hash, err := Hash([]byte("password"), params)
+	hash, _, _, err := Hash([]byte("password"), params)
 	if err != nil {
 		t.Error(err)
 	}
@@ -23,13 +23,13 @@ func TestHash(t *testing.T) {
 	}
 
 	//  hash should not be deterministic
-	newHash, _ := Hash([]byte("password"), params)
+	newHash, _, _, _ := Hash([]byte("password"), params)
 	if bytes.Equal(hash, newHash) {
 		t.Error("argon2id: hash is deterministic")
 	}
 
 	//  hash should be different with different password
-	wrongHash, _ := Hash([]byte("wrong"), params)
+	wrongHash, _, _, _ := Hash([]byte("wrong"), params)
 	if bytes.Equal(hash, wrongHash) {
 		t.Error("argon2id: hash is the same with different password")
 	}
@@ -37,7 +37,7 @@ func TestHash(t *testing.T) {
 	//  hash should be different with different params
 	newParams := DefaultParams
 	newParams.KeyLength = 64
-	diffHash, _ := Hash([]byte("password"), newParams)
+	diffHash, _, _, _ := Hash([]byte("password"), newParams)
 	if bytes.Equal(hash, diffHash) {
 		t.Error("argon2id: hash is the same with different params")
 	}
@@ -57,7 +57,7 @@ func TestVerify(t *testing.T) {
 	params := DefaultParams
 
 	//	Hash the password
-	hash, err := Hash([]byte("password"), params)
+	hash, _, _, err := Hash([]byte("password"), params)
 	if err != nil {
 		t.Error(err)
 	}
@@ -71,7 +71,7 @@ func TestVerify(t *testing.T) {
 }
 
 func BenchmarkVerify(b *testing.B) {
-	hash, _ := Hash([]byte("password"), DefaultParams)
+	hash, _, _, _ := Hash([]byte("password"), DefaultParams)
 	for i := 0; i < b.N; i++ {
 		Verify([]byte("password"), hash)
 	}

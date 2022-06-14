@@ -10,21 +10,22 @@ import (
 //	Returns the derived key of the given password using the argon2id key-derivation functions
 //	based on the given parameters. The parameters are prepended to the derived key and separated
 //	by the "$" character (0x24). If the provided parameters are invalid, an error will be returned
-func Hash(password []byte, params Params) ([]byte, error) {
+func Hash(password []byte, params Params) (result, salt, derivedKey []byte, err error) {
 
 	//	TODO: Check Params
 
 	//	Generate Salt
-	salt, err := utils.GenerateBytes(int(params.SaltLength))
+	salt, err = utils.GenerateBytes(int(params.SaltLength))
 	if err != nil {
 		panic(err)
 	}
 
 	//	Derive the key
-	derivedKey := argon2.IDKey(password, salt, params.Iterations, params.Memory, params.Parallelism, params.KeyLength)
+	derivedKey = argon2.IDKey(password, salt, params.Iterations, params.Memory, params.Parallelism, params.KeyLength)
 
-	result := params.Encode(salt, derivedKey)
-	return result, nil
+	result = params.Encode(salt, derivedKey)
+
+	return result, salt, derivedKey, nil
 }
 
 //	Compares a derived key with the potential password. The parameters from the derived key are used.
