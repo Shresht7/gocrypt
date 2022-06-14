@@ -7,7 +7,7 @@ import (
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
-//	Generates a new key from the given secret of the given size using argon2id.
+//	Generates a new key from the given secret.
 //	Panics if the key generation fails.
 func GenerateKey(secret []byte) []byte {
 	key, err := hash.HMAC_SHA_512_256(secret, string(secret))

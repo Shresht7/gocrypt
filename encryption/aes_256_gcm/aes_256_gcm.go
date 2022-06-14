@@ -10,7 +10,7 @@ import (
 	"github.com/Shresht7/gocrypt/utils"
 )
 
-//	Generates a new key from the given secret of the given size using argon2id.
+//	Generates a new key from the given secret.
 //	Panics if the key generation fails.
 func GenerateKey(secret []byte) []byte {
 	key, err := hash.HMAC_SHA_512_256(secret, string(secret))
@@ -21,7 +21,7 @@ func GenerateKey(secret []byte) []byte {
 }
 
 //	Encrypt the given plaintext using the given secret using AES-GCM-256.
-//	Output: nonce||ciphertext|tag where | is concatenation
+//	Output: nonce|ciphertext where | is concatenation
 func Encrypt(plaintext, secret []byte) ([]byte, error) {
 
 	//	Generate key from secret
@@ -53,7 +53,7 @@ func Encrypt(plaintext, secret []byte) ([]byte, error) {
 }
 
 //	Decrypt the given ciphertext using the given secret using AES-GCM-256.
-//	Input: nonce||ciphertext|tag where | is concatenation
+//	Input: nonce|ciphertext where | is concatenation
 func Decrypt(ciphertext, secret []byte) ([]byte, error) {
 
 	//	Generate key from secret
@@ -73,7 +73,7 @@ func Decrypt(ciphertext, secret []byte) ([]byte, error) {
 
 	//	Check ciphertext length against GCM nonce size
 	if len(ciphertext) < gcm.NonceSize() {
-		return nil, ErrMalformedCiphertext
+		return nil, errors.New("malformed ciphertext")
 	}
 
 	//	Extract nonce from ciphertext
@@ -88,8 +88,3 @@ func Decrypt(ciphertext, secret []byte) ([]byte, error) {
 	return plaintext, nil
 
 }
-
-//	Errors
-var (
-	ErrMalformedCiphertext = errors.New("malformed ciphertext")
-)
