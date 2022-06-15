@@ -5,17 +5,17 @@ import (
 	"errors"
 )
 
-//	Generates n random bytes with with given size
+//	Generate a random byte slice of the given size
 func GenerateBytes(size int) ([]byte, error) {
 	return generateBytes(size, size)
 }
 
-//	Generates n random bytes with with given size and given capacity
+//	Generate a random byte slice of the given size and capacity
 func GenerateBytesWithCapacity(size, capacity int) ([]byte, error) {
 	return generateBytes(size, capacity)
 }
 
-//	Generates n random bytes with with given size and given capacity
+//	Generate a random byte slice of the given size and capacity
 func generateBytes(size, capacity int) ([]byte, error) {
 
 	// Check if capacity is greater than size
